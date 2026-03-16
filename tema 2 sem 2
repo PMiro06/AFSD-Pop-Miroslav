@@ -1,0 +1,117 @@
+import csv
+import os
+
+glosar = {}
+
+def adauga_termen():
+    termen = input("Introduceți termenul: ").strip().lower()
+    if termen in glosar:
+        print(f"Eroare: Termenul '{termen}' există deja în glosar.")
+        return
+    
+    definitie = input("Definiție: ")
+    categorie = input("Categorie: ")
+    exemplu = input("Exemplu: ")
+    
+    glosar[termen] = {
+        "definiție": definitie,
+        "categorie": categorie,
+        "exemplu": exemplu
+    }
+    print(f"Termenul '{termen}' a fost adăugat cu succes.")
+
+def cautare_exacta():
+    termen = input("Introduceți termenul căutat: ").strip().lower()
+    if termen in glosar:
+        info = glosar[termen]
+        print(f"\n--- {termen.upper()} ---")
+        print(f"Definiție: {info['definiție']}")
+        print(f"Categorie: {info['categorie']}")
+        print(f"Exemplu: {info['exemplu']}")
+    else:
+        print("Termenul nu a fost găsit.")
+
+def cautare_partiala():
+    fragment = input("Introduceți fragmentul de text: ").strip().lower()
+    rezultate = [t for t in glosar if fragment in t]
+    
+    if rezultate:
+        print(f"Termeni găsiți ({len(rezultate)}): {', '.join(rezultate)}")
+    else:
+        print("Niciun termen nu conține acest fragment.")
+
+def actualizare_termen():
+    termen = input("Introduceți termenul de actualizat: ").strip().lower()
+    if termen not in glosar:
+        print("Termenul nu există.")
+        return
+    
+    print("Ce doriți să modificați? (definiție/categorie/exemplu)")
+    camp = input("Câmp: ").strip().lower()
+    
+    if camp in glosar[termen]:
+        noua_valoare = input(f"Noua valoare pentru {camp}: ")
+        glosar[termen][camp] = noua_valoare
+        print("Actualizare reușită.")
+    else:
+        print("Câmp invalid.")
+
+def sterge_termen():
+    termen = input("Introduceți termenul de șters: ").strip().lower()
+    if glosar.pop(termen, None):
+        print(f"Termenul '{termen}' a fost șters.")
+    else:
+        print("Termenul nu a fost găsit.")
+
+def afisare_glosar():
+    if not glosar:
+        print("Glosarul este gol.")
+        return
+    
+    print("\n--- GLOSAR COMPLET ---")
+    for termen, info in glosar.items():
+        print(f"{termen}: {info['definiție']} | Cat: {info['categorie']}")
+
+def afisare_statistici():
+    total = len(glosar)
+    categorii = {}
+    
+    for info in glosar.values():
+        cat = info['categorie']
+        categorii[cat] = categorii.get(cat, 0) + 1
+        
+    print(f"\nStatistici:")
+    print(f"- Număr total termeni: {total}")
+    print("- Termeni pe categorii:")
+    for cat, nr in categorii.items():
+        print(f"  * {cat}: {nr}")
+
+def meniu():
+    while True:
+        print("\n--- MENIU GLOSAR INTERACTIV ---")
+        print("1. Adăugare termen")
+        print("2. Căutare exactă")
+        print("3. Căutare parțială")
+        print("4. Actualizare termen")
+        print("5. Ștergere termen")
+        print("6. Afișare glosar")
+        print("7. Statistici")
+        print("0. Ieșire")
+        
+        optiune = input("Alegeți opțiunea: ")
+        
+        if optiune == "1": adauga_termen()
+        elif optiune == "2": cautare_exacta()
+        elif optiune == "3": cautare_partiala()
+        elif optiune == "4": actualizare_termen()
+        elif optiune == "5": sterge_termen()
+        elif optiune == "6": afisare_glosar()
+        elif optiune == "7": afisare_statistici()
+        elif optiune == "0": 
+            print("La revedere!")
+            break
+        else:
+            print("Opțiune invalidă. Reîncercați.")
+
+if __name__ == "__main__":
+    meniu()
