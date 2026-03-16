@@ -1,0 +1,154 @@
+produse = ["espresso", "latte", "cappuccino", "ceai", "ciocolata calda", "croissant"]
+preturi = [8.0, 12.0, 11.0, 7.0, 10.0, 9.0]
+stoc = [20, 15, 18, 30, 12, 10]
+cant_comanda = [0, 0, 0, 0, 0, 0]
+
+reducere_curenta = 0
+
+def afisare_meniu(produse, preturi, stoc):
+    print("\n--- MENIU PRODUSE ---")
+    print(f"{'Index':<6} {'Produs':<20} {'Pret (lei)':<12} {'Stoc':<6}")
+    print("-" * 50)
+    for i in range(len(produse)):
+        print(f"{i:<6} {produse[i]:<20} {preturi[i]:<12.2f} {stoc[i]:<6}")
+    print("-" * 50)
+
+def adaugare_produs(cant_comanda, stoc, index, cantitate):
+    if not (0 <= index < len(produse)):
+        print("Eroare: Index invalid!")
+        return False
+    
+    if cantitate <= 0:
+        print("Eroare: Cantitatea trebuie sa fie mai mare decat 0!")
+        return False
+    
+    stoc_disponibil = stoc[index] - cant_comanda[index]
+    if cantitate > stoc_disponibil:
+        print(f"Eroare: Stoc insuficient! Disponibil: {stoc_disponibil}")
+        return False
+    
+    cant_comanda[index] += cantitate
+    print(f"Adaugat: {cantitate} x {produse[index]}")
+    return True
+
+def scadere_produs(cant_comanda, index, cantitate):
+    if not (0 <= index < len(produse)):
+        print("Eroare: Index invalid!")
+        return False
+    
+    if cantitate <= 0:
+        print("Eroare: Cantitatea trebuie sa fie mai mare decat 0!")
+        return False
+    
+    if cant_comanda[index] == 0:
+        print(f"Eroare: {produse[index]} nu este in comanda!")
+        return False
+    
+    if cantitate > cant_comanda[index]:
+        print(f"Eroare: Cantitate prea mare! In comanda aveti doar {cant_comanda[index]}")
+        return False
+    
+    cant_comanda[index] -= cantitate
+    print(f"Scazut: {cantitate} x {produse[index]}")
+    return True
+
+def calcul_total(cant_comanda, preturi):
+    total = 0
+    for i in range(len(produse)):
+        total += cant_comanda[i] * preturi[i]
+    return total
+
+def stabilire_reducere(total, tip_reducere):
+    reducere = 0
+    if tip_reducere == "student":
+        if total >= 30.0:
+            reducere = 0.10 * total
+        else:
+            return 0
+    elif tip_reducere == "happy":
+        if total >= 50.0:
+            reducere = 0.15 * total
+        else:
+            return 0
+    elif tip_reducere == "cupon":
+        if total >= 25.0:
+            reducere = 7.0
+        else:
+            return 0
+    
+    if reducere > total:
+        reducere = total
+    return reducere
+
+def afisare_bon(produse, preturi, cant_comanda, total, reducere):
+    print("\n" + "=" * 50)
+    print("BON FISCAL".center(50))
+    print("=" * 50)
+    for i in range(len(produse)):
+        if cant_comanda[i] > 0:
+            subtotal = cant_comanda[i] * preturi[i]
+            print(f"{produse[i]:<20} {cant_comanda[i]:<8} {preturi[i]:<10.2f} {subtotal:<10.2f}")
+    print("-" * 50)
+    print(f"{'TOTAL FINAL:':<38} {total - reducere:>10.2f} lei")
+    print("=" * 50)
+
+def finalizare_comanda(stoc, cant_comanda):
+    for i in range(len(stoc)):
+        stoc[i] -= cant_comanda[i]
+    for i in range(len(cant_comanda)):
+        cant_comanda[i] = 0
+
+def anulare_comanda(cant_comanda):
+    for i in range(len(cant_comanda)):
+        cant_comanda[i] = 0
+
+def afisare_meniu_principal():
+    print("\n--- MENIU PRINCIPAL ---")
+    print("1. Afisare meniu produse\n2. Adaugare produs\n3. Scadere produs\n4. Aplicare reducere\n5. Finalizare\n6. Anulare\n0. Iesire")
+
+def meniu_reduceri(total):
+    global reducere_curenta
+    while True:
+        optiune = input("Alegeti reducerea (1-student, 2-happy, 3-cupon, 4-fara, 5-inapoi): ")
+        if optiune == "1":
+            reducere_curenta = stabilire_reducere(total, "student")
+            break
+        elif optiune == "2":
+            reducere_curenta = stabilire_reducere(total, "happy")
+            break
+        elif optiune == "3":
+            reducere_curenta = stabilire_reducere(total, "cupon")
+            break
+        elif optiune == "4":
+            reducere_curenta = 0
+            break
+        elif optiune == "5":
+            break
+
+def main():
+    global reducere_curenta
+    while True:
+        afisare_meniu_principal()
+        optiune = input("Optiune: ")
+        if optiune == "1":
+            afisare_meniu(produse, preturi, stoc)
+        elif optiune == "2":
+            try:
+                idx = int(input("Index: "))
+                cant = int(input("Cantitate: "))
+                adaugare_produs(cant_comanda, stoc, idx, cant)
+            except ValueError: print("Eroare!")
+        elif optiune == "4":
+            total = calcul_total(cant_comanda, preturi)
+            if total > 0: meniu_reduceri(total)
+        elif optiune == "5":
+            total = calcul_total(cant_comanda, preturi)
+            if total > 0:
+                afisare_bon(produse, preturi, cant_comanda, total, reducere_curenta)
+                finalizare_comanda(stoc, cant_comanda)
+                reducere_curenta = 0
+        elif optiune == "0":
+            break
+
+if __name__ == "__main__":
+    main()
