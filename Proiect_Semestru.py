@@ -23,20 +23,19 @@ class SemaforInteligentApp:
         self.bucla_principala()
 
     def creeaza_interfata(self):
-        # --- PANOU CONTROL (Stânga) ---
+        #Panou stanga
         panou_control = tk.Frame(self.root, width=280, bg="#f0f0f0", bd=2, relief=tk.GROOVE)
         panou_control.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
 
         tk.Label(panou_control, text="PANOU CONTROL", font=("Arial", 14, "bold"), bg="#f0f0f0").pack(pady=10)
 
-        # Opțiune mod funcționare
+        # Buton activ
         tk.Checkbutton(panou_control, text="Activează Algoritm Inteligent", variable=self.mod_inteligent,
                        font=("Arial", 11), bg="#f0f0f0").pack(pady=10, anchor="w", padx=10)
 
-        # --- SIMULARE TRAFIC MANUAL ---
         tk.Label(panou_control, text="Control Trafic Manual:", font=("Arial", 11, "bold"), bg="#f0f0f0").pack(pady=10)
 
-        # Secțiune pentru Axa Nord-Sud
+        # Axa Nord-Sud
         tk.Label(panou_control, text="Axa Nord-Sud:", font=("Arial", 10, "italic"), bg="#f0f0f0").pack(anchor="w",
                                                                                                        padx=20)
         frame_ns = tk.Frame(panou_control, bg="#f0f0f0")
@@ -49,8 +48,7 @@ class SemaforInteligentApp:
         btn_sub_ns = tk.Button(frame_ns, text="-5 Mașini", command=lambda: self.modifica_masini('NS', -5), bg="#ffcdd2",
                                width=10)
         btn_sub_ns.pack(side=tk.RIGHT, expand=True, padx=2)
-
-        # Secțiune pentru Axa Est-Vest
+        #Axa E-V
         tk.Label(panou_control, text="Axa Est-Vest:", font=("Arial", 10, "italic"), bg="#f0f0f0").pack(anchor="w",
                                                                                                        padx=20,
                                                                                                        pady=(10, 0))
@@ -65,12 +63,11 @@ class SemaforInteligentApp:
                                width=10)
         btn_sub_ev.pack(side=tk.RIGHT, expand=True, padx=2)
 
-        # Statistici
+
         tk.Label(panou_control, text="STATISTICI", font=("Arial", 12, "bold"), bg="#f0f0f0").pack(pady=20)
         self.lbl_stat_ns = tk.Label(panou_control, text="", font=("Arial", 10), bg="#f0f0f0", justify=tk.LEFT)
         self.lbl_stat_ns.pack(anchor="w", padx=10)
 
-        # --- ZONA VIZUALĂ / INTERSECȚIE (Dreapta) ---
         self.canvas = tk.Canvas(self.root, width=540, height=580, bg="#2e7d32")
         self.canvas.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
